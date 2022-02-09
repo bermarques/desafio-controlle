@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import logo from "./logo.svg";
+import { Button } from "antd";
+import { useState } from "react";
 import "./App.css";
-import { Modal, Button } from "antd";
+import NewProposalModal from "./components/NewProposalModal";
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
@@ -10,15 +10,14 @@ function App() {
     setIsModalVisible(true);
   };
 
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
-  return <div className="App"></div>;
+  return (
+    <div className="App">
+      <Button type="primary" onClick={showModal}>
+        Adicionar proposta comercial
+      </Button>
+      <NewProposalModal isVisible={isModalVisible} setVisibility={setIsModalVisible} />
+    </div>
+  );
 }
 
 export default App;
