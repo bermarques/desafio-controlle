@@ -1,5 +1,5 @@
+import { Form, Modal as antdModal } from "antd";
 import styled from "styled-components";
-import { Modal as antdModal } from "antd";
 
 export const Modal = styled(antdModal).attrs(() => ({
   width: "50%",
@@ -7,10 +7,16 @@ export const Modal = styled(antdModal).attrs(() => ({
 }))`
   .ant-modal-content {
     padding: 1rem 2rem;
+    border-radius: 8px;
   }
   .ant-modal-footer,
   .ant-modal-header {
     border: none;
+  }
+
+  .ant-modal-title {
+    font-size: 1.5rem;
+    font-weight: bold;
   }
 `;
 
@@ -59,8 +65,17 @@ export const ValuesRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-weight: 500;
 
   .ant-typography {
     margin: 0 !important;
   }
+
+  &:last-of-type {
+    margin-bottom: 3rem;
+  }
+`;
+
+export const ButtonContainer = styled(Form.Item)`
+  margin-bottom: 0;
 `;

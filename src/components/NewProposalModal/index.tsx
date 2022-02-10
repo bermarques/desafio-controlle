@@ -3,7 +3,15 @@ import { Button, Divider, Form, Input, InputNumber, Select, Typography } from "a
 import dayjs from "dayjs";
 import { useState } from "react";
 import DatePicker from "../DatePicker";
-import { ItemContainer, Modal, ProposalBody, ProposalHeader, ValuesContainer, ValuesRow } from "./style";
+import {
+  ButtonContainer,
+  ItemContainer,
+  Modal,
+  ProposalBody,
+  ProposalHeader,
+  ValuesContainer,
+  ValuesRow,
+} from "./style";
 
 interface IItem {
   quantity: number;
@@ -231,11 +239,11 @@ const NewProposalModal: React.FC<INewProposalModal> = ({ isVisible, setVisibilit
           </ValuesContainer>
         </ProposalBody>
 
-        <Form.Item>
+        <ButtonContainer>
           <Button type="primary" htmlType="submit">
             Salvar
           </Button>
-        </Form.Item>
+        </ButtonContainer>
       </Form>
     </Modal>
   );
