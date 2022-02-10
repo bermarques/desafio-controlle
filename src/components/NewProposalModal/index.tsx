@@ -30,6 +30,7 @@ const NewProposalModal: React.FC<INewProposalModal> = ({ isVisible, setVisibilit
 
   const onFinish = (values: any) => {
     console.log("Valores do formulário:", values);
+    console.log("Valores finais:", finalValues);
   };
 
   const handleOk = () => {
