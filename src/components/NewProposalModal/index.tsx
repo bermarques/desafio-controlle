@@ -1,9 +1,9 @@
-import { Button, Divider, Form, Input, InputNumber, Select, Space, Typography } from "antd";
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Divider, Form, Input, InputNumber, Select, Typography } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 import DatePicker from "../DatePicker";
-import { Modal, ProposalBody, ProposalHeader, ItemContainer, ValuesContainer, ValuesRow } from "./style";
-import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { ItemContainer, Modal, ProposalBody, ProposalHeader, ValuesContainer, ValuesRow } from "./style";
 
 interface IItem {
   quantity: number;
