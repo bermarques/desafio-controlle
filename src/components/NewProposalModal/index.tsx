@@ -5,32 +5,23 @@ import DatePicker from "../DatePicker";
 import { Modal, ProposalBody, ProposalHeader, ItemContainer, ValuesContainer, ValuesRow } from "./style";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 
+interface IItem {
+  quantity: number;
+  value: number;
+  name: string;
+  subtotal: number;
+}
 interface INewProposalModal {
   isVisible: boolean;
   setVisibility: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
-interface IItem {
-  name: string;
-  quantity: number;
-  value: number;
-  subtotal: number;
-}
-
 const NewProposalModal: React.FC<INewProposalModal> = ({ isVisible, setVisibility }) => {
-  const [additionalItems, setAdditionalItems] = useState<IItem[]>([{ name: "", quantity: 0, value: 0, subtotal: 0 }]);
+  const [finalValues, setFinalValues] = useState({ subtotal: 0, discount: 0, totalValue: 0 });
   const [form] = Form.useForm();
   const dateFormat = "DD/MM/YYYY";
 
-  const formItemLayoutWithOutLabel = {
-    wrapperCol: {
-      xs: { span: 24, offset: 0 },
-      sm: { span: 20, offset: 4 },
-    },
-  };
-
   const onFinish = (values: any) => {
-    console.log("Received values of form:", values);
+    console.log("Valores do formulário:", values);
   };
 
   const handleOk = () => {
@@ -40,6 +31,29 @@ const NewProposalModal: React.FC<INewProposalModal> = ({ isVisible, setVisibilit
   const handleCancel = () => {
     setVisibility(false);
   };
+
+  const handlePrices = (key: number) => {
+    const fields = form.getFieldsValue();
+    const { items } = fields;
+    Object.assign(items[key], { subtotal: items[key].value * items[key].quantity });
+    form.setFieldsValue({ items });
+
+    const newSubtotal = items.reduce((acc: any, item: IItem) => acc + item.subtotal, 0);
+    setFinalValues({
+      ...finalValues,
+      subtotal: newSubtotal,
+      totalValue: newSubtotal - finalValues.discount,
+    });
+  };
+
+  const handleTotalValue = (val: number) => {
+    setFinalValues({
+      ...finalValues,
+      discount: val,
+      totalValue: finalValues.subtotal - val,
+    });
+  };
+
   return (
     <Modal title="Nova proposta comercial" visible={isVisible} onOk={handleOk} onCancel={handleCancel} okText="Salvar">
       <Form form={form} layout="vertical" onFinish={onFinish} requiredMark={false}>
@@ -77,7 +91,7 @@ const NewProposalModal: React.FC<INewProposalModal> = ({ isVisible, setVisibilit
         <ProposalBody>
           <Form.List
             name="items"
-            initialValue={[""]}
+            initialValue={[{ quantity: 1, value: 0 }]}
             rules={[
               {
                 validator: async (_, items) => {
@@ -121,7 +135,12 @@ const NewProposalModal: React.FC<INewProposalModal> = ({ isVisible, setVisibilit
                             },
                           ]}
                         >
-                          <InputNumber style={{ width: "100%" }} step="0.00" decimalSeparator="," />
+                          <InputNumber
+                            onChange={() => handlePrices(key)}
+                            style={{ width: "100%" }}
+                            step="0.00"
+                            decimalSeparator=","
+                          />
                         </Form.Item>
                         <Form.Item
                           {...restField}
@@ -140,10 +159,22 @@ const NewProposalModal: React.FC<INewProposalModal> = ({ isVisible, setVisibilit
                             parser={(value: any) => value.replace(/\$\s?|(\.*)/g, "")}
                             style={{ width: "100%" }}
                             prefix="R$ "
+                            onChange={() => handlePrices(key)}
                           />
                         </Form.Item>
-                        <Form.Item label={idx === 0 ? "Subtotal" : ""} style={{ width: "20%" }}>
-                          <Input readOnly />
+                        <Form.Item
+                          {...restField}
+                          name={[name, "subtotal"]}
+                          label={idx === 0 ? "Subtotal" : ""}
+                          style={{ width: "20%" }}
+                        >
+                          <InputNumber
+                            readOnly
+                            prefix="R$ "
+                            formatter={(value: string | undefined) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                            parser={(value: any) => value.replace(/\$\s?|(\.*)/g, "")}
+                            style={{ width: "100%" }}
+                          />
                         </Form.Item>
                         {idx > 0 ? (
                           <MinusCircleOutlined className="dynamic-delete-button" onClick={() => remove(name)} />
@@ -165,17 +196,37 @@ const NewProposalModal: React.FC<INewProposalModal> = ({ isVisible, setVisibilit
           <ValuesContainer>
             <ValuesRow>
               <Typography.Title level={5}>Subtotal</Typography.Title>
-              <Typography.Text>R$ 3000.00</Typography.Text>
+              <Typography.Text>
+                {finalValues.subtotal.toLocaleString("pt-BR", {
+                  minimumFractionDigits: 2,
+                  style: "currency",
+                  currency: "BRL",
+                })}
+              </Typography.Text>
             </ValuesRow>
             <Divider />
             <ValuesRow>
               <Typography.Title level={5}>Desconto</Typography.Title>
-              <Input style={{ width: "25%" }} />
+              <InputNumber
+                prefix="R$ "
+                style={{ width: "25%" }}
+                formatter={(value: string | undefined) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                parser={(value: any) => value.replace(/\$\s?|(\.*)/g, "")}
+                onChange={(val) => {
+                  handleTotalValue(Number(val));
+                }}
+              />
             </ValuesRow>
             <Divider />
             <ValuesRow>
               <Typography.Title level={5}>Total</Typography.Title>
-              <Typography.Title level={4}>R$ 3000.00</Typography.Title>
+              <Typography.Title level={4}>
+                {finalValues.totalValue.toLocaleString("pt-BR", {
+                  minimumFractionDigits: 2,
+                  style: "currency",
+                  currency: "BRL",
+                })}
+              </Typography.Title>
             </ValuesRow>
           </ValuesContainer>
         </ProposalBody>

@@ -1,9 +1,12 @@
 import styled from "styled-components";
-import { Form, Modal as antdModal } from "antd";
+import { Modal as antdModal } from "antd";
 
 export const Modal = styled(antdModal).attrs(() => ({
   width: "50%",
 }))`
+  .ant-modal-content {
+    padding: 1rem 2rem;
+  }
   .ant-modal-footer,
   .ant-modal-header {
     border: none;
@@ -22,19 +25,24 @@ export const ProposalBody = styled.div``;
 export const ItemContainer = styled.div`
   display: flex;
   justify-content: space-between;
+  position: relative;
 
   .dynamic-delete-button {
-    position: relative;
+    position: absolute;
+    float: right;
     top: 4px;
+    right: -38px;
     margin: 0 8px;
     color: #999;
     font-size: 24px;
     cursor: pointer;
     transition: all 0.3s;
   }
+
   .dynamic-delete-button:hover {
     color: #777;
   }
+
   .dynamic-delete-button[disabled] {
     cursor: not-allowed;
     opacity: 0.5;
