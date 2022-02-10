@@ -3,6 +3,7 @@ import { Modal as antdModal } from "antd";
 
 export const Modal = styled(antdModal).attrs(() => ({
   width: "50%",
+  footer: null,
 }))`
   .ant-modal-content {
     padding: 1rem 2rem;

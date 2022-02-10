@@ -55,7 +55,7 @@ const NewProposalModal: React.FC<INewProposalModal> = ({ isVisible, setVisibilit
   };
 
   return (
-    <Modal title="Nova proposta comercial" visible={isVisible} onOk={handleOk} onCancel={handleCancel} okText="Salvar">
+    <Modal title="Nova proposta comercial" visible={isVisible} onOk={handleOk} onCancel={handleCancel}>
       <Form form={form} layout="vertical" onFinish={onFinish} requiredMark={false}>
         <ProposalHeader>
           <Form.Item
